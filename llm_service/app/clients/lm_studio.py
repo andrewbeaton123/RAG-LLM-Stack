@@ -81,7 +81,7 @@ class LMStudioLLM(LLM,  BaseLLMInterface):
 
         try: 
             response = requests.post(
-                f"{self.base_url}/completions",
+                f"{self.base_url}/v1/completions",
                 json = payload,
                 headers= {"Content-Type": "application/json"},
                 timeout = 30 
