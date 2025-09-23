@@ -25,6 +25,10 @@ class LMStudioLLM(LLM,  BaseLLMInterface):
     max_tokens: int = Field(default=1000)
     prompt: str = Field(default='')
     
+    _retriever: Any = None  # set via set_retriever()
+    _retrieval_k: int = 4
+
+
     def __init__(
         
             self,
@@ -121,3 +125,38 @@ class LMStudioLLM(LLM,  BaseLLMInterface):
         self.prompt = "\n\n".join(prompt_parts)
 
         return self.generate(self.prompt, **kwargs)
+    
+
+    ## RAG 
+
+    def set_retriever(self, 
+                      retriever: Any,
+                      default_k : int = 4 )  -> None:
+        
+        logger.debug("Setting retriever in lm studio interface")
+
+        self._retriever = retriever
+        self._retrieval_k = default_k
+        
+        logger.debug("Finished Setting retriever in lm studio interface")
+
+    
+    def _unpack_doc_text(self,
+                         doc:Any):
+        
+        # handle strings and dict of strings 
+
+        if doc is None: 
+            return ""
+        
+        if isinstance(doc, str):
+            return doc
+        
+        if isinstance(doc, dict):
+            return doc.get("page_content") or doc.get("text") or doc.get("content") or str(doc)
+
+        return str(doc)
+    
+    #TODO use retriever to get  the content
+    #TODO  interim search of extra contect 
+    #TODO use content  and prompt together 
