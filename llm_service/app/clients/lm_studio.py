@@ -157,6 +157,45 @@ class LMStudioLLM(LLM,  BaseLLMInterface):
 
         return str(doc)
     
-    #TODO use retriever to get  the content
+
+    def retrieve_contect(self,
+                         query : str , 
+                         k : Optional[int] = None) -> str: 
+        
+        if self._retriever is None: 
+            return ""
+        
+        # either use the  number of documents from 
+        # what  was passed in or from the class variable
+        k = k or self._retrieval_k
+
+        if hasattr( self._retriever, "get_relevant_documents"):
+            docs = self._retriever.get_relevant_documents(query, k=k)
+        
+        elif hasattr(self._retriever, "retrieve"):
+            try:
+                docs = self._retriever.retriever(query, k=k)
+            except TypeError:
+                # If there is an issue then try  and not 
+                # use the number of docs as a variable 
+        
+        elif callable(self._retriever):
+            docs = self._retriever(query, k )
+        
+        else:
+            # if all else fails  just return an empty  string 
+            return ""
+
+        if docs is None:
+            return ""
+
+        # ensure that the docs are in a sequence and limit to k 
+        docs = list(docs)[:k]
+
+        pieces = [self._unpack_doc_text(t) for t in docs if self._unpack_doc_text(t)]
+
+        return "\n\n---\n\n".join(pieces)
+
+    #TODO write tests for the  retrieve context
     #TODO  interim search of extra contect 
     #TODO use content  and prompt together 
