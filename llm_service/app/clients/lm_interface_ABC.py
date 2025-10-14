@@ -1,4 +1,4 @@
-from typing import  Dict, List, Optional
+from typing import  Dict, List, Optional, Any
 from abc import ABC, abstractmethod  
 from loguru import logger 
 
@@ -53,7 +53,7 @@ class BaseLLMInterface(ABC):
         return str(doc)
     
 
-    def retrieve_content(self,
+    def retrieve_context(self,
                          query : str , 
                          k : Optional[int] = None) -> str: 
         
