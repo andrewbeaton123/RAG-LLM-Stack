@@ -91,6 +91,59 @@ class BaseLLMInterface(ABC):
         pieces = [self._unpack_doc_text(t) for t in docs if self._unpack_doc_text(t)]
 
         return "\n\n---\n\n".join(pieces)
-    #TODO write tests for the  retrieve context
+ 
+    
+    def build_rag_prompt(
+            self,
+            prompt : str, 
+            k : Optional[int] = None, 
+            context_template: Optional[str] = None, 
+            **kwargs: Any ) -> str:
+        
+        context = self.retrieve_context(prompt, k=k)
+        
+        if context: 
+            if context_template:
+                logger.info("Base llm with retrieval used the context template")
+                full_prompt = context_template.format(context = context,
+                                                    prompt = prompt)
+            
+            else: 
+                logger.info("Base llm with retrieval used the default context format")
+                full_prompt = f"Context: \n{context}\n\n User prompt:"
+
+        else:
+                logger.info("Base llm with retrieval did not change the prompt")
+                full_prompt = prompt
+        
+        return full_prompt
+    
+
+    def generate_with_rag( self,
+                          prompt: str, 
+                          **kwargs) -> str: 
+        
+        enhanced_prompt =  self.build_rag_prompt(prompt, **kwargs)
+        return self.generate(enhanced_prompt)
+    
+    def chat_with_rag(self, 
+                      messages: List[Dict[str, str]], 
+                      **kwargs) -> str : 
+        
+        
+        last_user_msg = next(
+            (msg["content"] from msg in reversed(messages)
+            if msg['role'] == 'user'),
+            None
+            )
+        
+        if last_user_msg:
+            context = self.build_rag_prompt(last_user_msg, **kwargs)
+
+            messages = [
+                {"role": "system", "content": f"Use this context to help answer: {context}"},
+                *messages
+            ]
+            
     #TODO  interim search of extra contect 
     #TODO use content  and prompt together 
