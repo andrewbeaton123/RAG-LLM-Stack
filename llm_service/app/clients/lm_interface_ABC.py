@@ -132,7 +132,7 @@ class BaseLLMInterface(ABC):
         
         
         last_user_msg = next(
-            (msg["content"] from msg in reversed(messages)
+            (msg["content"] for msg in reversed(messages)
             if msg['role'] == 'user'),
             None
             )
@@ -144,6 +144,8 @@ class BaseLLMInterface(ABC):
                 {"role": "system", "content": f"Use this context to help answer: {context}"},
                 *messages
             ]
+        
+        return self.chat(messages)
             
     #TODO  interim search of extra contect 
     #TODO use content  and prompt together 

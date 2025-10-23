@@ -7,9 +7,11 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 import pytest 
 
 from typing import Any
+from langchain.schema import LLMResult
 from unittest.mock import MagicMock
 from llm_service.app.clients.lm_interface_ABC import BaseLLMInterface
 from llm_service.app.clients.providers import LLMProvider
+
 
 
 
@@ -26,6 +28,8 @@ class TestLLM(BaseLLMInterface):
 @pytest.fixture
 def base_llm():
     return TestLLM()
+
+
 
 
 
@@ -80,3 +84,23 @@ def test__retrive_context_with_get_relevant_documents(base_llm):
     results =  base_llm.retrieve_context("test query")
     assert results == "doc1\n\n---\n\ndoc2"
     mock_retriever.get_relevant_documents.assert_called_once_with("test query", k=5)
+
+
+def test__chat_with_rag_null(base_llm):
+
+    #the chat function is mocked
+    mock_response = "This is a mock response"
+    base_llm.chat  = MagicMock(return_value = mock_response)
+    
+    # the rag retriever is mocked
+    mock_retriever = MagicMock()
+    mock_retriever.get_relevant_documents.return_value = ["doc1", "doc2"]
+
+    base_llm.set_retriever(mock_retriever, 5)
+
+
+    result =   base_llm.chat_with_rag([]) 
+
+    assert result == mock_response
+    base_llm.chat.assert_called_once_with([])
+
