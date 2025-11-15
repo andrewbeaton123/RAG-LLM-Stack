@@ -3,11 +3,8 @@ import os
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-
 import pytest 
 
-from typing import Any
-from langchain.schema import LLMResult
 from unittest.mock import MagicMock
 from llm_service.app.clients.lm_interface_ABC import BaseLLMInterface
 from llm_service.app.clients.providers import LLMProvider

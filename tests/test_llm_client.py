@@ -6,8 +6,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 
 import pytest
-
-from langchain.schema import LLMResult
+from langchain_core.outputs.llm_result import LLMResult
 from unittest.mock import patch, MagicMock
 from llm_service.app.clients import  LMStudioLLM
 

@@ -2,8 +2,8 @@ import requests
 import os 
 
 from loguru  import logger
-from  langchain.llms.base import LLM
-from langchain.callbacks.manager import CallbackManagerForLLMRun
+from langchain_core.language_models.llms import LLM
+from langchain_core.callbacks.manager import CallbackManagerForLLMRun
 from typing import Optional,Dict,List, Any
 from pydantic import Field
 
