@@ -46,7 +46,6 @@ def test_lm_studio_generates_correct_response(mock_llm_result):
         assert response.generations[0][0][0] == "This is a mocked response."
 
 
-
 def test_lm_studio_call_temperature(mock_requests_post):
     llm = LMStudioLLM(base_url="http://mocked_url:1234/v1")
     llm._call("test prompt", temperature = 0.7)
