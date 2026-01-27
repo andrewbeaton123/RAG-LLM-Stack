@@ -60,7 +60,7 @@ Usage
 
 Roadmap
 
-    [ ] Implement a basic Ollama client in llm_service.
+    [X] Implement a basic Ollama client in llm_service.
 
     [ ] Add a simple document retriever for RAG.
 
