@@ -1,6 +1,8 @@
 
 from fastapi import APIRouter
 
+from .models.generate import GenerateRequest, GenerateResponse
+
 router = APIRouter(
     prefix = "/api/v1",
     tags=["llm"]
@@ -16,7 +18,7 @@ def health():
     return {"message" : "ok"}
 
 
-@router.get("/generate")
-def generate():
+@router.post("/generate", response_model=GenerateResponse)
+def generate(request: GenerateRequest):
     
     return {"text": "Test Response !"}
