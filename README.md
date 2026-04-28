@@ -52,15 +52,36 @@ Installation
 
 Usage
 
-    Running Services Locally: Use Docker Compose to spin up all services with a single command.
+### Codebase Summary
+Project Purpose & Architecture This is a modular, monorepo-style RAG-LLM stack designed as a learning platform to transition from data science to AI engineering. It follows a service-oriented architecture with three main components:
 
-    docker-compose up
+llm_service/: Core backend exposing a FastAPI REST interface for LLM calls and RAG processing.
+monitoring/: Observability service (metrics/traces via Langfuse/Prometheus).
+interface/: Frontend/CLI consumer of the API.
+Current Implementation State The codebase is in an early scaffolding phase. The API routes, Pydantic models, configuration loader, and LLM client interfaces are defined, but they are not yet wired together. The /generate endpoint currently returns a hardcoded stub, and the RAG prompt builder exists in isolation.
 
-    Accessing the Interface: Once the services are running, the interface will be available at http://localhost:8501 (or the port you configure).
 
-Roadmap
+File	Role
 
-    [X] Implement a basic Ollama client in llm_service.
+llm_service/app/main.py	FastAPI app initialization & router mounting
+
+llm_service/app/api/llm_api.py	API routes (/ping, /health, /generate)
+
+llm_service/app/api/models/generate.py	Request/Response Pydantic schemas
+
+llm_service/app/clients/lm_interface_ABC.py	Base RAG prompt construction logic (context retrieval + formatting)
+
+llm_service/app/clients/lm_studio.py	LM Studio client initialization & connection verification
+
+llm_service/app/config.py	Singleton YAML config loader
+
+tests/test_base_llm_interfance.py	Unit tests for document text extraction
+
+
+### Roadmap
+
+
+    [X] Implement a basic LM-Studio client in llm_service.
 
     [ ] Add a simple document retriever for RAG.
 

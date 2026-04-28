@@ -10,13 +10,14 @@ class Config():
     def __new__(cls):
         if cls.instance is None:
             cls.instance =  super().__new__(cls)
+            cls.instance._load_config()
         return cls.instance
 
     def _load_config(self,
                     path :Optional[str]= None):
         
         if path is None: 
-            path = Path(__file__).resolve().parent/"defualt_config.yml"
+            path = Path(__file__).resolve().parent/"default_config.yml"
 
 
         try :
